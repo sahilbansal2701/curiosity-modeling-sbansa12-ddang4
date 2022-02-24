@@ -40,15 +40,29 @@ pred move[pre: State, numUp: Int, p: Player, post: State] {
     p = P1 implies P1Turn[pre]
     p = P2 implies P2Turn[pre]
     numUp >= 1 and numUp <= 3
+    // not gameOver[pre]
     // ACTION
     post.count = add[numUp, pre.count] // How Many Numbers They Count Up
     post.player != pre.player // Next State Must Have the Next Player
 }
 
+
+// pred doNothing[pre: State, post: State] {
+//     gameOver[pre] -- guard of the transition
+//     pre.board = post.board -- effect of the transition
+// }
+
+
+
 pred loser[s: State, p: Player] {
     s.count = 21
     s.player = p
 }
+
+// gameOver[s: State] {
+//   some p: Player | winner[s, p]
+// }
+
 
 pred traces {
     -- initial board is a starting board (rules of 21)
@@ -62,6 +76,21 @@ pred traces {
         }
     } 
 }
+
+// pred traces {
+//     -- The trace starts with an initial state
+//     starting[Game.initialState]
+//     no sprev: State | sprev.next = Game.initialState
+//     -- Every transition is a valid move
+//     all s: State | some Game.next[s] implies {
+//       some row, col: Int, p: Player | {
+//         move[s, row, col, p, Game.next[s]] 
+//       }
+//       or
+//       doNothing[s, Game.next[s]]      
+//     } 
+// }
+
 
 run {
     wellformed
