@@ -24,7 +24,7 @@ pred wellformed {
 
 pred starting[s: State] {
     s.count = 0
-    s.player = P2 // Person To Say s.count
+    s.player = P2 // Person to say s.count
 }
 
 pred P1Turn[s: State] {
@@ -40,29 +40,29 @@ pred move[pre: State, numUp: Int, p: Player, post: State] {
     p = P1 implies P1Turn[pre]
     p = P2 implies P2Turn[pre]
     numUp >= 1 and numUp <= 3
-    // not gameOver[pre]
+    add[numUp, pre.count] < 22
+    not gameOver[pre]
+
     // ACTION
-    post.count = add[numUp, pre.count] // How Many Numbers They Count Up
-    post.player != pre.player // Next State Must Have the Next Player
+    post.count = add[numUp, pre.count] // How many numbers they count up
+    post.player != pre.player // Next state must have the next player
 }
 
 
-// pred doNothing[pre: State, post: State] {
-//     gameOver[pre] -- guard of the transition
-//     pre.board = post.board -- effect of the transition
-// }
-
-
+pred doNothing[pre: State, post: State] {
+    gameOver[pre] -- guard of the transition
+    pre.count = post.count -- effect of the transition
+    pre.player = post.player
+}
 
 pred loser[s: State, p: Player] {
     s.count = 21
     s.player = p
 }
 
-// gameOver[s: State] {
-//   some p: Player | winner[s, p]
-// }
-
+pred gameOver[s: State] {
+  some p: Player | loser[s, p]
+}
 
 pred traces {
     -- initial board is a starting board (rules of 21)
@@ -72,27 +72,22 @@ pred traces {
     --"next” enforces move predicate (valid transitions!)
     all s: State | {
         some Game.next[s] implies {
-            some num: Int, p: Player | move[s, num, p, Game.next[s]]
+            (some num: Int, p: Player | move[s, num, p, Game.next[s]])
+            or
+            (doNothing[s, Game.next[s]])
         }
-    } 
+        
+    }
 }
-
-// pred traces {
-//     -- The trace starts with an initial state
-//     starting[Game.initialState]
-//     no sprev: State | sprev.next = Game.initialState
-//     -- Every transition is a valid move
-//     all s: State | some Game.next[s] implies {
-//       some row, col: Int, p: Player | {
-//         move[s, row, col, p, Game.next[s]] 
-//       }
-//       or
-//       doNothing[s, Game.next[s]]      
-//     } 
-// }
-
 
 run {
     wellformed
     traces
-} for exactly 21 State, 6 Int for {next is linear}
+} for exactly 22 State, exactly 6 Int for {next is linear}
+
+// Uncomment to make P2 always lose
+// run {
+//     wellformed
+//     traces
+//     some s: State | loser[s, P2]
+// } for exactly 22 State, exactly 6 Int for {next is linear}

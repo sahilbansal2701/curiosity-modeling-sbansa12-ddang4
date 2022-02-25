@@ -4,7 +4,8 @@
 A game with n amount of people. We start counting up and each person can only say 1-3 numbers. Whoever says 21 loses the game. Between two people there is a known strategy to always win. So could be taken in two ways. Either only have two players and increase the number we count to or keep the number we count to the same and increase number of players. Interesting to see if we can find a strategy such that a player always wins.
 
 # Assumptions
-We are playing a Two Player version of the counting to 21 game.
+- We are playing a Two Player version of the counting to 21 game.
+- Player 1 always goes first
 
 # Abstractions
 initial state is player 2, 0
