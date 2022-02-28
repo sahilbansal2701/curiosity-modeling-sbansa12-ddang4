@@ -110,6 +110,8 @@ pred tracesStrategic {
     }
 }
 
+// Runs
+// Uncomment for traces of the game
 // run {
 //     wellformed
 //     traces
@@ -130,29 +132,24 @@ pred tracesStrategic {
 
 // Tests
 test expect {
+    vacuityTest: {
+        wellformed
+        traces
+    } for exactly 22 State, exactly 6 Int for {next is linear} is sat
     strategyAlwaysWins: {
         wellformed
         tracesStrategic
         some s: State | loser[s, P2]
     } for exactly 22 State, exactly 6 Int for {next is linear} is unsat
-}
-
-test expect {
     basicTestwithLessStates: {
         wellformed
         traces
     } for exactly 10 State, exactly 6 Int for {next is linear} is sat
-}
-
-test expect {
     noOneWinsTestwithLessThanSevenStates: {
         wellformed
         traces
         some s: State | (loser[s, P2] or loser[s, P1])
     } for exactly 7 State, exactly 6 Int for {next is linear} is unsat
-}
-
-test expect {
     onlyOnePlayerAlwaysLoses: {
         wellformed
         traces
@@ -161,6 +158,7 @@ test expect {
     } for exactly 22 State, exactly 6 Int for {next is linear} is unsat
 }
 
+// Examples
 example validWellformed is {wellformed} for {
     #Int = 6
     State = `State0
